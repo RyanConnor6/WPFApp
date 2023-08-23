@@ -31,7 +31,7 @@ namespace WPFAppProject
     public partial class LoginWindow : Window
     {
         PasswordHandler passwordHandler = PasswordHandler.getInstance();
-        FirestoreDb db;
+        UserHandler userHandler = UserHandler.getInstance();
 
         public LoginWindow()
         {
@@ -40,9 +40,8 @@ namespace WPFAppProject
 
         private void LoginWindow_Load(object sender, EventArgs e)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"wpfappdatabaseproject-firebase-adminsdk-7qfur-59c54e3204.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            db = FirestoreDb.Create("wpfappdatabaseproject");
+            //Onload activities here
+            userHandler.accessDatabase();
         }
 
         //Set window minimum size
@@ -87,14 +86,7 @@ namespace WPFAppProject
             byte[] salt = passwordHandler.GenerateSalt();
             string hashedPassword = passwordHandler.encode(passwordBox.Password, salt);
 
-            Google.Cloud.Firestore.DocumentReference doc = db.Collection("userLogin").Document(usernameBox.Text);
-            Dictionary<string, object> data1 = new Dictionary<string, object>()
-            {
-                {"Password", hashedPassword},
-                {"Salt", Convert.ToBase64String(salt)}
-            };
-            doc.SetAsync(data1);
-            MessageBox.Show("Data added");
+            userHandler.registerUser(usernameBox.Text, hashedPassword, salt);
         }
 
         private async void loginButton_Click(object sender, RoutedEventArgs e)
@@ -111,30 +103,8 @@ namespace WPFAppProject
                 return;
             }
 
-            Google.Cloud.Firestore.DocumentReference docref = db.Collection("userLogin").Document(usernameBox.Text);
-            DocumentSnapshot snap = await docref.GetSnapshotAsync();
-
-            var attemptedPassword = "a";
-            var attemptedSalt = "a";
-
-            if (snap.Exists)
-            {
-                Dictionary<string, object> user = snap.ToDictionary();
-                foreach (var item in user){
-                    if (item.Key.Equals("Password"))
-                    {
-                        attemptedPassword = item.Value.ToString();
-                    }
-                    if (item.Key.Equals("Salt"))
-                    {
-                        attemptedSalt = item.Value.ToString();
-                    }
-                }
-            }
-
-            string encoded = passwordHandler.encode(passwordBox.Password, Convert.FromBase64String(attemptedSalt));
-
-            if (encoded.Equals(attemptedPassword))
+            var loginSuccess = await userHandler.Login(usernameBox.Text, passwordBox.Password);
+            if (loginSuccess == true)
             {
                 HomeWindow home = new HomeWindow();
                 home.Show();
