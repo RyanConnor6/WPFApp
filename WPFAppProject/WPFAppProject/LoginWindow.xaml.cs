@@ -112,7 +112,7 @@ namespace WPFAppProject
             }
             else
             {
-                MessageBox.Show("Warning: Incorrect Password");
+                MessageBox.Show("Warning: Incorrect Username Or Password");
             }
         }
     }

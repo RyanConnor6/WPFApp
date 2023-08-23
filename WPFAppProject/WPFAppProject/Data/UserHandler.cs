@@ -76,6 +76,10 @@ namespace WPFAppProject.Data
                     }
                 }
             }
+            else
+            {
+                return false;
+            }
 
             string encoded = passwordHandler.encode(desiredPassword, Convert.FromBase64String(attemptedSalt));
 
