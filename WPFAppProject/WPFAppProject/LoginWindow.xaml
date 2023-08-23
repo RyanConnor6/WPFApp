@@ -10,7 +10,8 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight"
-        ContentRendered="Set_Minimums">
+        ContentRendered="Set_Minimums"
+        Loaded="LoginWindow_Load">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <materialDesign:DialogHost CloseOnClickAway="True" x:Name="dialogHost" Width="350" Height="280">
         <StackPanel Margin="0 0 0 0" Width="350">

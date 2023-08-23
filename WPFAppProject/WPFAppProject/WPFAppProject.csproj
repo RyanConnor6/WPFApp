@@ -16,10 +16,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Tlogo.ico" />
+    <None Remove="wpfappdatabaseproject-firebase-adminsdk-7qfur-59c54e3204.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Tlogo.ico" />
+    <Content Include="wpfappdatabaseproject-firebase-adminsdk-7qfur-59c54e3204.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.3.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
   </ItemGroup>
 
