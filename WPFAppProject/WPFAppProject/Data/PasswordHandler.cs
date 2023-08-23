@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPFAppProject
+namespace WPFAppProject.Data
 {
     //Password handler singleton
     public sealed class PasswordHandler
@@ -13,7 +13,7 @@ namespace WPFAppProject
         //Singelton code
         private static PasswordHandler reference;
 
-        public PasswordHandler(){ }
+        public PasswordHandler() { }
 
         //Create the only instance of handler
         public static PasswordHandler getInstance()
