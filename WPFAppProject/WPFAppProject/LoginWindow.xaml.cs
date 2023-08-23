@@ -90,10 +90,14 @@ namespace WPFAppProject
             if (encoded.Equals(hashedPassword))
             {
                 MessageBox.Show("Correct Password");
-                return;
+                HomeWindow home = new HomeWindow();
+                home.Show();
+                this.Close();
             }
-
-            MessageBox.Show("Incorrect Password");
+            else
+            {
+                MessageBox.Show("Incorrect Password");
+            }
 
             sr.Close();
         }
