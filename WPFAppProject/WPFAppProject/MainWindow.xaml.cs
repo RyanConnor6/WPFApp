@@ -65,6 +65,18 @@ namespace WPFAppProject
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(usernameBox.Text))
+            {
+                MessageBox.Show("Warning: Enter Username");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(passwordBox.Password))
+            {
+                MessageBox.Show("Warning: Enter Password");
+                return;
+            }
+
             StreamReader sr = new StreamReader($"TestPassword.txt");
             var line = sr.ReadLine();
             line = sr.ReadLine();
@@ -77,7 +89,10 @@ namespace WPFAppProject
             if (encoded.Equals(hashedPassword))
             {
                 MessageBox.Show("Correct Password");
+                return;
             }
+
+            MessageBox.Show("Incorrect Password");
 
             sr.Close();
         }
