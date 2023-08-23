@@ -24,5 +24,11 @@ namespace WPFAppProject
         {
             InitializeComponent();
         }
+
+        private void Set_Minimums(object sender, EventArgs e)
+        {
+            MinWidth = ActualWidth;
+            MinHeight = ActualHeight;
+        }
     }
 }
