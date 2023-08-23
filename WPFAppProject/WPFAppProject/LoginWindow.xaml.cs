@@ -43,7 +43,6 @@ namespace WPFAppProject
             string path = AppDomain.CurrentDomain.BaseDirectory + @"wpfappdatabaseproject-firebase-adminsdk-7qfur-59c54e3204.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             db = FirestoreDb.Create("wpfappdatabaseproject");
-            MessageBox.Show("Successful");
         }
 
         //Set window minimum size
@@ -67,15 +66,26 @@ namespace WPFAppProject
                 return;
             }
 
+            if (usernameBox.Text.Length < 5)
+            {
+                MessageBox.Show("Warning: Username Must Be 5 Or More Characters In Length");
+                return;
+            }
+
+            if (usernameBox.Text.Length > 20)
+            {
+                MessageBox.Show("Warning: Username Must Be 20 Or Less Characters In Length");
+                return;
+            }
+
+            if (usernameBox.Text.Contains(" "))
+            {
+                MessageBox.Show("Warning: Username Cannot Contain Spaces");
+                return;
+            }
+
             byte[] salt = passwordHandler.GenerateSalt();
             string hashedPassword = passwordHandler.encode(passwordBox.Password, salt);
-
-            /*
-            using StreamWriter file = new($"TestPassword.txt");
-            file.WriteLine(usernameBox.Text);
-            file.WriteLine(Convert.ToBase64String(salt));
-            file.WriteLine(hashedPassword);
-            */
 
             Google.Cloud.Firestore.DocumentReference doc = db.Collection("userLogin").Document(usernameBox.Text);
             Dictionary<string, object> data1 = new Dictionary<string, object>()
@@ -100,15 +110,6 @@ namespace WPFAppProject
                 MessageBox.Show("Warning: Enter Password");
                 return;
             }
-
-            /*
-            StreamReader sr = new StreamReader($"TestPassword.txt");
-            var line = sr.ReadLine();
-            line = sr.ReadLine();
-            var salt = Convert.FromBase64String(line);
-            line = sr.ReadLine();
-            var hashedPassword = line;
-            */
 
             Google.Cloud.Firestore.DocumentReference docref = db.Collection("userLogin").Document(usernameBox.Text);
             DocumentSnapshot snap = await docref.GetSnapshotAsync();
@@ -135,29 +136,14 @@ namespace WPFAppProject
 
             if (encoded.Equals(attemptedPassword))
             {
-                MessageBox.Show("Correct Password");
-                HomeWindow home = new HomeWindow();
-                home.Show();
-                this.Close();
-            }
-
-            /*
-            string encoded = passwordHandler.encode(passwordBox.Password, salt);
-
-            if (encoded.Equals(hashedPassword))
-            {
-                MessageBox.Show("Correct Password");
                 HomeWindow home = new HomeWindow();
                 home.Show();
                 this.Close();
             }
             else
             {
-                MessageBox.Show("Incorrect Password");
+                MessageBox.Show("Warning: Incorrect Password");
             }
-
-            sr.Close();
-            */
         }
     }
 }
