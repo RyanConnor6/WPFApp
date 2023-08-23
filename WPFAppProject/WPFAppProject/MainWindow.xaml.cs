@@ -26,7 +26,7 @@ namespace WPFAppProject
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string testPassword = "CY9rzUYh03PK3k6DJie09g==";
+        PasswordHandler passwordHandler = PasswordHandler.getInstance();
 
         public MainWindow()
         {
@@ -38,34 +38,6 @@ namespace WPFAppProject
         {
             MinWidth = ActualWidth;
             MinHeight = ActualHeight;
-        }
-
-        //Salt a password
-        static byte[] GenerateSalt()
-        {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                byte[] salt = new byte[32]; // 32 bytes for a strong salt
-                rng.GetBytes(salt);
-                return salt;
-            }
-        }
-
-        //Encode a password
-        static string encode(string password, byte[] salt)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-                byte[] saltedPassword = new byte[passwordBytes.Length + salt.Length];
-
-                // Concatenate password and salt
-                Buffer.BlockCopy(passwordBytes, 0, saltedPassword, 0, passwordBytes.Length);
-                Buffer.BlockCopy(salt, 0, saltedPassword, passwordBytes.Length, salt.Length);
-
-                byte[] hashBytes = sha256.ComputeHash(saltedPassword);
-                return Convert.ToBase64String(hashBytes);
-            }
         }
 
         private void registerButton_Click(object sender, RoutedEventArgs e)
@@ -82,10 +54,9 @@ namespace WPFAppProject
                 return;
             }
 
-            byte[] salt = GenerateSalt();
-            string hashedPassword = encode(passwordBox.Password, salt);
+            byte[] salt = passwordHandler.GenerateSalt();
+            string hashedPassword = passwordHandler.encode(passwordBox.Password, salt);
 
-            MessageBox.Show("Salt is: " + Convert.ToBase64String(salt) + ", encrypted password is: " + hashedPassword);
             using StreamWriter file = new($"TestPassword.txt");
             file.WriteLine(usernameBox.Text);
             file.WriteLine(Convert.ToBase64String(salt));
@@ -101,7 +72,7 @@ namespace WPFAppProject
             line = sr.ReadLine();
             var hashedPassword = line;
 
-            string encoded = encode(passwordBox.Password, salt);
+            string encoded = passwordHandler.encode(passwordBox.Password, salt);
 
             if (encoded.Equals(hashedPassword))
             {
