@@ -30,80 +30,103 @@ namespace WPFAppProject
     /// </summary>
     public partial class LoginWindow : Window
     {
+        //Get the instance of password and user handler
         PasswordHandler passwordHandler = PasswordHandler.getInstance();
         UserHandler userHandler = UserHandler.getInstance();
 
+        //LoginWindow
         public LoginWindow()
         {
             InitializeComponent();
         }
 
+        //On load
         private void LoginWindow_Load(object sender, EventArgs e)
         {
-            //Onload activities here
+            //On load activities here
+
+            //Get database access
             userHandler.accessDatabase();
         }
 
         //Set window minimum size
         private void Set_Minimums(object sender, EventArgs e)
         {
+            //Set to actual size of content
+            //Design view may look different to runtime
+            //Thats why this exists
             MinWidth = ActualWidth;
             MinHeight = ActualHeight;
         }
 
+        //Attempt Register
         private void registerButton_Click(object sender, RoutedEventArgs e)
         {
+            //Warning if no username in username text box
             if (string.IsNullOrEmpty(usernameBox.Text))
             {
                 MessageBox.Show("Warning: Username Required");
                 return;
             }
 
+            //Warning if no password in password password box
             if (string.IsNullOrEmpty(passwordBox.Password))
             {
                 MessageBox.Show("Warning: Password Required");
                 return;
             }
 
+            //Warning if username is less than 5 characters in length
             if (usernameBox.Text.Length < 5)
             {
                 MessageBox.Show("Warning: Username Must Be 5 Or More Characters In Length");
                 return;
             }
 
+            //Warning if username is more than 20 characters in length
             if (usernameBox.Text.Length > 20)
             {
                 MessageBox.Show("Warning: Username Must Be 20 Or Less Characters In Length");
                 return;
             }
 
+            ////Warning if username contains a space
             if (usernameBox.Text.Contains(" "))
             {
                 MessageBox.Show("Warning: Username Cannot Contain Spaces");
                 return;
             }
 
+            //Generate some salt for the hashed password
             byte[] salt = passwordHandler.GenerateSalt();
+            //Generate a hashed password in password handler by giving plain text password and the salt
             string hashedPassword = passwordHandler.encode(passwordBox.Password, salt);
 
+            //Handle registering the user in userhandler, send over username, encrypted password and salt
             userHandler.registerUser(usernameBox.Text, hashedPassword, salt);
         }
 
+        //Attempt login
         private async void loginButton_Click(object sender, RoutedEventArgs e)
         {
+            //Warning if username textbox is empty 
             if (string.IsNullOrEmpty(usernameBox.Text))
             {
                 MessageBox.Show("Warning: Enter Username");
                 return;
             }
 
+            //Warning if password password box is empty 
             if (string.IsNullOrEmpty(passwordBox.Password))
             {
                 MessageBox.Show("Warning: Enter Password");
                 return;
             }
 
+            //Try username and password combination using userhandler
             var loginSuccess = await userHandler.Login(usernameBox.Text, passwordBox.Password);
+
+            //If login is a success change windows
             if (loginSuccess == true)
             {
                 HomeWindow home = new HomeWindow();

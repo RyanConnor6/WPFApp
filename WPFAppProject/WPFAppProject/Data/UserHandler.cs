@@ -21,9 +21,12 @@ namespace WPFAppProject.Data
         private FirestoreDb db;
         PasswordHandler passwordHandler = PasswordHandler.getInstance();
 
+        //Constructor, empty as there should only be one
         public UserHandler() { }
 
-        //Database getter
+        //Database getters
+
+        //Get database
         public FirestoreDb Db
         {
             get { return db; }
@@ -38,6 +41,7 @@ namespace WPFAppProject.Data
             return reference;
         }
 
+        //Access the database
         public void accessDatabase()
         {
             //Get database access, access json from database
@@ -46,9 +50,13 @@ namespace WPFAppProject.Data
             db = FirestoreDb.Create("wpfappdatabaseproject");
         }
 
+        //Register a user
         public void registerUser(string desiredName, string hashedPassword, byte[] salt)
         {
+            //Get reference to database userLogin collection
             CollectionReference coll = db.Collection("userLogin");
+
+            //Send all relevant data to a dictionary
             Dictionary<string, object> data1 = new Dictionary<string, object>()
             {
                 {"Username", desiredName},
@@ -58,32 +66,36 @@ namespace WPFAppProject.Data
             coll.AddAsync(data1);
         }
 
-        public async Task endQuery()
-        {
-
-        }
-
+        //Login a user
         public async Task<bool> Login(string desiredName, string desiredPassword)
         {
+            //Try logging in
             try
             {
+                //Setting up variables
                 var attemptedPassword = "a";
                 var attemptedSalt = "a";
+
+                //Create a query to find the user with the input username
                 Query query = db.Collection("userLogin").WhereEqualTo("Username", desiredName);
                 var queryNameTask = query.GetSnapshotAsync();
                 while (!queryNameTask.IsCompleted) await Task.Yield();
 
+                //Store query result
                 var querySnapshot = queryNameTask.Result;
 
+                //For each result, change into a dictionary and get salt and password from database
                 foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
                 {
                     Dictionary<string, object> stuff = documentSnapshot.ToDictionary();
                     foreach (KeyValuePair<string, object> kvp in stuff)
                     {
+                        //attemptedSalt is salt found
                         if (kvp.Key.Equals("Salt"))
                         {
                             attemptedSalt = kvp.Value.ToString();
                         }
+                        //attemptedPassword is hashed password found
                         if (kvp.Key.Equals("Password"))
                         {
                             attemptedPassword = kvp.Value.ToString();
@@ -91,17 +103,21 @@ namespace WPFAppProject.Data
                     }
                 }
 
+                //If the query has no documents, return a fail
                 if (querySnapshot.Documents.Count == 0)
                 {
                     return false;
                 }
+                //Otherwise encode password provided using salt and verify if it matches the hashed password from the database 
                 else
                 {
                     string encoded = passwordHandler.encode(desiredPassword, Convert.FromBase64String(attemptedSalt));
+                    //If they match return a success
                     if (encoded.Equals(attemptedPassword))
                     {
                         return true;
                     }
+                    //Otherwise fail
                     else
                     {
                         return false;
@@ -109,50 +125,12 @@ namespace WPFAppProject.Data
                 }
             }
 
+            //Cant do something in the operation, return a fail
             catch (Exception e)
             {
                 MessageBox.Show("I'm here now!");
                 return false;
             }
-
-            /*
-            Google.Cloud.Firestore.DocumentReference docref = db.Collection("userLogin").Document(desiredName);
-            DocumentSnapshot snap = await docref.GetSnapshotAsync();
-
-            var attemptedPassword = "a";
-            var attemptedSalt = "a";
-
-            if (snap.Exists)
-            {
-                Dictionary<string, object> user = snap.ToDictionary();
-                foreach (var item in user)
-                {
-                    if (item.Key.Equals("Password"))
-                    {
-                        attemptedPassword = item.Value.ToString();
-                    }
-                    if (item.Key.Equals("Salt"))
-                    {
-                        attemptedSalt = item.Value.ToString();
-                    }
-                }
-            }
-            else
-            {
-                return false;
-            }
-
-            string encoded = passwordHandler.encode(desiredPassword, Convert.FromBase64String(attemptedSalt));
-
-            if (encoded.Equals(attemptedPassword))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            */
         }
     }
 }

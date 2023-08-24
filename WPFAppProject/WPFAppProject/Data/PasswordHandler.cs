@@ -13,6 +13,7 @@ namespace WPFAppProject.Data
         //Singelton code
         private static PasswordHandler reference;
 
+        //Constructor, empty as there should only be one
         public PasswordHandler() { }
 
         //Create the only instance of handler
@@ -24,12 +25,12 @@ namespace WPFAppProject.Data
             return reference;
         }
 
-        //Salt a password
+        //Create some salt
         public byte[] GenerateSalt()
         {
             using (var rng = new RNGCryptoServiceProvider())
             {
-                byte[] salt = new byte[32]; // 32 bytes for a strong salt
+                byte[] salt = new byte[32]; //Strong 32 byte salt
                 rng.GetBytes(salt);
                 return salt;
             }
@@ -38,15 +39,18 @@ namespace WPFAppProject.Data
         //Encode a password
         public string encode(string password, byte[] salt)
         {
+            //Hash using sha256
             using (var sha256 = SHA256.Create())
             {
+                //UTF8 format
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
                 byte[] saltedPassword = new byte[passwordBytes.Length + salt.Length];
 
-                // Concatenate password and salt
+                //Concatenate password and salt
                 Buffer.BlockCopy(passwordBytes, 0, saltedPassword, 0, passwordBytes.Length);
                 Buffer.BlockCopy(salt, 0, saltedPassword, passwordBytes.Length, salt.Length);
 
+                //Get hash of the salted password
                 byte[] hashBytes = sha256.ComputeHash(saltedPassword);
                 return Convert.ToBase64String(hashBytes);
             }
