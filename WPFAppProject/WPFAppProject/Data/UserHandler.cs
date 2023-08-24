@@ -80,7 +80,6 @@ namespace WPFAppProject.Data
                     Dictionary<string, object> stuff = documentSnapshot.ToDictionary();
                     foreach (KeyValuePair<string, object> kvp in stuff)
                     {
-                        MessageBox.Show("Key = " + kvp.Key + " Value = " + kvp.Value);
                         if (kvp.Key.Equals("Salt"))
                         {
                             attemptedSalt = kvp.Value.ToString();
@@ -107,7 +106,6 @@ namespace WPFAppProject.Data
                     {
                         return false;
                     }
-                    return true;
                 }
             }
 
