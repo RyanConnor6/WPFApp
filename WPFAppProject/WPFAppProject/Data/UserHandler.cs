@@ -67,8 +67,9 @@ namespace WPFAppProject.Data
         {
             try
             {
-                Query query = db.CollectionGroup("userLogin");
-                query.WhereEqualTo("Username","sussy");
+                var attemptedPassword = "a";
+                var attemptedSalt = "a";
+                Query query = db.Collection("userLogin").WhereEqualTo("Username", desiredName);
                 var queryNameTask = query.GetSnapshotAsync();
                 while (!queryNameTask.IsCompleted) await Task.Yield();
 
@@ -80,10 +81,34 @@ namespace WPFAppProject.Data
                     foreach (KeyValuePair<string, object> kvp in stuff)
                     {
                         MessageBox.Show("Key = " + kvp.Key + " Value = " + kvp.Value);
+                        if (kvp.Key.Equals("Salt"))
+                        {
+                            attemptedSalt = kvp.Value.ToString();
+                        }
+                        if (kvp.Key.Equals("Password"))
+                        {
+                            attemptedPassword = kvp.Value.ToString();
+                        }
                     }
                 }
 
-                return true;
+                if (querySnapshot.Documents.Count == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    string encoded = passwordHandler.encode(desiredPassword, Convert.FromBase64String(attemptedSalt));
+                    if (encoded.Equals(attemptedPassword))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    return true;
+                }
             }
 
             catch (Exception e)
