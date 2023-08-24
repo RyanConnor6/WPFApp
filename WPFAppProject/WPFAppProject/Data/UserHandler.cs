@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Threading;
+using System.Xml.Linq;
+using FirebaseAdmin.Messaging;
+using System.Collections;
+using Google.Cloud.Firestore.V1;
 
 namespace WPFAppProject.Data
 {
@@ -44,17 +48,51 @@ namespace WPFAppProject.Data
 
         public void registerUser(string desiredName, string hashedPassword, byte[] salt)
         {
-            Google.Cloud.Firestore.DocumentReference doc = db.Collection("userLogin").Document(desiredName);
+            CollectionReference coll = db.Collection("userLogin");
             Dictionary<string, object> data1 = new Dictionary<string, object>()
             {
+                {"Username", desiredName},
                 {"Password", hashedPassword},
                 {"Salt", Convert.ToBase64String(salt)}
             };
-            doc.SetAsync(data1);
+            coll.AddAsync(data1);
+        }
+
+        public async Task endQuery()
+        {
+
         }
 
         public async Task<bool> Login(string desiredName, string desiredPassword)
         {
+            try
+            {
+                Query query = db.CollectionGroup("userLogin");
+                query.WhereEqualTo("Username","sussy");
+                var queryNameTask = query.GetSnapshotAsync();
+                while (!queryNameTask.IsCompleted) await Task.Yield();
+
+                var querySnapshot = queryNameTask.Result;
+
+                foreach (DocumentSnapshot documentSnapshot in querySnapshot.Documents)
+                {
+                    Dictionary<string, object> stuff = documentSnapshot.ToDictionary();
+                    foreach (KeyValuePair<string, object> kvp in stuff)
+                    {
+                        MessageBox.Show("Key = " + kvp.Key + " Value = " + kvp.Value);
+                    }
+                }
+
+                return true;
+            }
+
+            catch (Exception e)
+            {
+                MessageBox.Show("I'm here now!");
+                return false;
+            }
+
+            /*
             Google.Cloud.Firestore.DocumentReference docref = db.Collection("userLogin").Document(desiredName);
             DocumentSnapshot snap = await docref.GetSnapshotAsync();
 
@@ -91,6 +129,7 @@ namespace WPFAppProject.Data
             {
                 return false;
             }
+            */
         }
     }
 }
