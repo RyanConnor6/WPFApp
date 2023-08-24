@@ -1,27 +1,25 @@
-﻿<Window x:Class="WPFAppProject.LoginWindow"
+﻿<Window x:Class="WPFAppProject.RegisterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:local="clr-namespace:WPFAppProject"
+        xmlns:local="clr-namespace:WPFAppProject" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Login"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight"
         ContentRendered="Set_Minimums"
-        Loaded="LoginWindow_Load"
-        Closed="CloseRelevant">
+        Loaded="RegisterWindow_Load">
     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <materialDesign:DialogHost CloseOnClickAway="True" x:Name="dialogHost" Width="350" Height="280">
-        <StackPanel Margin="0 0 0 0" Width="350">
+            <StackPanel Margin="0 0 0 0" Width="350">
                 <TextBlock Margin="25 0 0 0" FontSize="26" FontWeight="Bold" Text="Sign In"/>
                 <TextBox Margin="0 10 0 0" x:Name="usernameBox" Width="300" FontSize="18" materialDesign:HintAssist.Hint="Enter Username" BorderThickness="2" BorderBrush="{DynamicResource MaterialDesignDivider}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 <PasswordBox Margin="0 10 0 0" x:Name="passwordBox" Width="300" FontSize="18" materialDesign:HintAssist.Hint="Enter Password" BorderThickness="2" BorderBrush="{DynamicResource MaterialDesignDivider}" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"/>
-                <Button Margin="0 15 0 0" x:Name="loginButton" Style="{StaticResource MaterialDesignFlatMidBgButton}" materialDesign:ShadowAssist.ShadowDepth="Depth0" Height="53" Width="300" materialDesign:ButtonAssist.CornerRadius="15" FontSize="20" FontWeight="Bold" Content="LOGIN" Click="loginButton_Click"/>
-                <Button Margin="-120 10 0 0" x:Name="registerButton" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ShadowAssist.ShadowDepth="Depth0" materialDesign:ButtonAssist.CornerRadius="15" FontSize="18" Content="Create an Account" HorizontalContentAlignment="Left" Width="190" Click="registerButton_Click"/>
+                <Button Margin="0 15 0 0" x:Name="registerButton" Style="{StaticResource MaterialDesignFlatMidBgButton}" materialDesign:ShadowAssist.ShadowDepth="Depth0" Height="53" Width="300" materialDesign:ButtonAssist.CornerRadius="15" FontSize="20" FontWeight="Bold" Content="REGISTER" Click="registerButton_Click"/>
+                <Button Margin="-60 10 0 0" x:Name="loginButton" Style="{StaticResource MaterialDesignFlatButton}" materialDesign:ShadowAssist.ShadowDepth="Depth0" materialDesign:ButtonAssist.CornerRadius="15" FontSize="18" Content="Login An Existing Account" HorizontalContentAlignment="Left" Width="250" Click="loginButton_Click"/>
             </StackPanel>
-    </materialDesign:DialogHost>
+        </materialDesign:DialogHost>
     </StackPanel>
 </Window>

@@ -33,6 +33,7 @@ namespace WPFAppProject
         //Get the instance of password and user handler
         PasswordHandler passwordHandler = PasswordHandler.getInstance();
         UserHandler userHandler = UserHandler.getInstance();
+        RegisterWindow register = null;
 
         //LoginWindow
         public LoginWindow()
@@ -47,6 +48,14 @@ namespace WPFAppProject
 
             //Get database access
             userHandler.accessDatabase();
+
+            register = new RegisterWindow(this);
+        }
+
+        //On close
+        private void CloseRelevant(object sender, EventArgs e)
+        {
+            register.Close();
         }
 
         //Set window minimum size
@@ -62,48 +71,8 @@ namespace WPFAppProject
         //Attempt Register
         private void registerButton_Click(object sender, RoutedEventArgs e)
         {
-            //Warning if no username in username text box
-            if (string.IsNullOrEmpty(usernameBox.Text))
-            {
-                MessageBox.Show("Warning: Username Required");
-                return;
-            }
-
-            //Warning if no password in password password box
-            if (string.IsNullOrEmpty(passwordBox.Password))
-            {
-                MessageBox.Show("Warning: Password Required");
-                return;
-            }
-
-            //Warning if username is less than 5 characters in length
-            if (usernameBox.Text.Length < 5)
-            {
-                MessageBox.Show("Warning: Username Must Be 5 Or More Characters In Length");
-                return;
-            }
-
-            //Warning if username is more than 20 characters in length
-            if (usernameBox.Text.Length > 20)
-            {
-                MessageBox.Show("Warning: Username Must Be 20 Or Less Characters In Length");
-                return;
-            }
-
-            ////Warning if username contains a space
-            if (usernameBox.Text.Contains(" "))
-            {
-                MessageBox.Show("Warning: Username Cannot Contain Spaces");
-                return;
-            }
-
-            //Generate some salt for the hashed password
-            byte[] salt = passwordHandler.GenerateSalt();
-            //Generate a hashed password in password handler by giving plain text password and the salt
-            string hashedPassword = passwordHandler.encode(passwordBox.Password, salt);
-
-            //Handle registering the user in userhandler, send over username, encrypted password and salt
-            userHandler.registerUser(usernameBox.Text, hashedPassword, salt);
+            register.Show();
+            this.Hide();
         }
 
         //Attempt login
@@ -132,6 +101,7 @@ namespace WPFAppProject
                 HomeWindow home = new HomeWindow();
                 home.Show();
                 this.Close();
+                register.Close();
             }
             else
             {
