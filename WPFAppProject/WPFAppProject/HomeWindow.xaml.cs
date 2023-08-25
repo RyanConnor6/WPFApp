@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MaterialDesignColors;
 
 namespace WPFAppProject
 {
@@ -20,6 +22,7 @@ namespace WPFAppProject
     public partial class HomeWindow : Window
     {
         HomePage my = new HomePage();
+        BrushConverter bc = new BrushConverter();
 
         public HomeWindow()
         {
@@ -29,6 +32,16 @@ namespace WPFAppProject
         private void homeButton_Click(object sender, RoutedEventArgs e)
         {
             navframe.Navigate(my);
+        }
+
+        private void mouseEnterButton(object sender, RoutedEventArgs e)
+        {
+            ((Button)sender).Background = (Brush)bc.ConvertFrom("#FF34648A");
+        }
+
+        private void mouseLeaveButton(object sender, RoutedEventArgs e)
+        {
+            ((Button)sender).Background = (Brush)bc.ConvertFrom("#FF38434C");
         }
     }
 }
