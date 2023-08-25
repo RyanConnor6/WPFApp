@@ -45,7 +45,7 @@ namespace WPFAppProject.Data
         public void accessDatabase()
         {
             //Get database access, access json from database
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"wpfappdatabaseproject-firebase-adminsdk-7qfur-59c54e3204.json";
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"wpfappdatabaseproject-firebase-adminsdk-7qfur-4802bed042.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             db = FirestoreDb.Create("wpfappdatabaseproject");
         }
