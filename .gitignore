@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Exclude Firestore private key files
-*-firebase-adminsdk.json
+*-firebase-adminsdk*.json
