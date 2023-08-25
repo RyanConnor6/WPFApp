@@ -10,25 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace WPFAppProject
 {
     /// <summary>
-    /// Interaction logic for HomeWindow.xaml
+    /// Interaction logic for HomePage.xaml
     /// </summary>
-    public partial class HomeWindow : Window
+    public partial class HomePage : Page
     {
-        HomePage my = new HomePage();
-
-        public HomeWindow()
+        public HomePage()
         {
             InitializeComponent();
-        }
-
-        private void homeButton_Click(object sender, RoutedEventArgs e)
-        {
-            navframe.Navigate(my);
         }
     }
 }
