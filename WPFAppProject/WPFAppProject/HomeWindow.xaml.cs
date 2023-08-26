@@ -43,5 +43,12 @@ namespace WPFAppProject
         {
             ((Button)sender).Background = (Brush)bc.ConvertFrom("#FF38434C");
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Adjust the Frame's size along with the window
+            navframe.Width = mainGrid.ColumnDefinitions[1].ActualWidth;
+            navframe.Height = mainGrid.RowDefinitions[0].ActualHeight;
+        }
     }
 }
