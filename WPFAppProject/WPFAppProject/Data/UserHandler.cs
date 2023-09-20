@@ -51,10 +51,25 @@ namespace WPFAppProject.Data
         }
 
         //Register a user
-        public void registerUser(string desiredName, string hashedPassword, byte[] salt)
+        public async void registerUser(string desiredName, string hashedPassword, byte[] salt)
         {
             //Get reference to database userLogin collection
             CollectionReference coll = db.Collection("userLogin");
+
+            //Create a query to find the user with the input username
+            Query query = db.Collection("userLogin").WhereEqualTo("Username", desiredName);
+            var queryNameTask = query.GetSnapshotAsync();
+            while (!queryNameTask.IsCompleted) await Task.Yield();
+
+            //Store query result
+            var querySnapshot = queryNameTask.Result;
+
+            //If the query has no documents, return a fail
+            if (querySnapshot.Documents.Count > 0)
+            {
+                MessageBox.Show("Warning: User Already Exists!");
+                return;
+            }
 
             //Send all relevant data to a dictionary
             Dictionary<string, object> data1 = new Dictionary<string, object>()
@@ -63,7 +78,7 @@ namespace WPFAppProject.Data
                 {"Password", hashedPassword},
                 {"Salt", Convert.ToBase64String(salt)}
             };
-            coll.AddAsync(data1);
+            await coll.AddAsync(data1);
         }
 
         //Login a user
